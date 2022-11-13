@@ -1,26 +1,11 @@
-#[derive(PartialEq, Debug)]
-pub struct ParsedToken {
-    pub token: Token,
-    pub literal: String,
-}
-
-impl ParsedToken {
-    pub fn new(token: Token, value: &str) -> Self {
-        ParsedToken {
-            token,
-            literal: value.to_string(),
-        }
-    }
-}
-
 // TODO: allow data to be passed into the enum variant
 // TODO: implement lookup table?
 #[derive(Debug, Eq, PartialEq)]
 pub enum Token {
-    Illegal,
+    Illegal(String),
     EOF,
-    Identifier,
-    Integer,
+    Identifier(String),
+    Integer(String),
     Assign,
     Plus,
     Comma,
@@ -38,10 +23,7 @@ impl Token {
         match value {
             "fn" => Token::Function,
             "let" => Token::Let,
-            _ => Token::Identifier,
+            identifier => Token::Identifier(identifier.to_string()),
         }
     }
 }
-
-// Transforms tokens into AST
-struct Parser {}

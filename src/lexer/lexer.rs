@@ -1,4 +1,4 @@
-use crate::tokens::{ParsedToken, Token};
+use crate::tokens::Token;
 
 // TODO: maybe current_char should be grouped with position?
 // TODO: support unicode and emojis?
@@ -24,43 +24,26 @@ impl Lexer {
         lexer
     }
 
-    pub fn next_token(&mut self) -> ParsedToken {
+    pub fn next_token(&mut self) -> Token {
         self.skip_whitespace();
 
         let token = match self.current_char {
-            '=' => ParsedToken::new(Token::Assign, self.current_char.to_string().as_str()),
-            ';' => ParsedToken::new(Token::Semicolon, self.current_char.to_string().as_str()),
-            '(' => ParsedToken::new(
-                Token::LeftParenthesis,
-                self.current_char.to_string().as_str(),
-            ),
-            ')' => ParsedToken::new(
-                Token::RightParenthesis,
-                self.current_char.to_string().as_str(),
-            ),
-            '{' => ParsedToken::new(
-                Token::LeftCurlyBrace,
-                self.current_char.to_string().as_str(),
-            ),
-            '}' => ParsedToken::new(
-                Token::RightCurlyBrace,
-                self.current_char.to_string().as_str(),
-            ),
-            ',' => ParsedToken::new(Token::Comma, self.current_char.to_string().as_str()),
-            '+' => ParsedToken::new(Token::Plus, self.current_char.to_string().as_str()),
-            '0' => ParsedToken::new(Token::EOF, ""),
-            _ => {
-                if self.is_current_char_letter() {
-                    let identifier = self.read_identifier();
-                    return ParsedToken::new(Token::new(identifier), identifier);
+            '=' => Token::Assign,
+            ';' => Token::Semicolon,
+            '(' => Token::LeftParenthesis,
+            ')' => Token::RightParenthesis,
+            '{' => Token::LeftCurlyBrace,
+            '}' => Token::RightCurlyBrace,
+            ',' => Token::Comma,
+            '+' => Token::Plus,
+            '0' => Token::EOF,
+            v => {
+                return if self.is_current_char_letter() {
+                    Token::new(self.read_identifier())
                 } else if self.is_current_char_digit() {
-                    let number = self.read_number();
-                    return ParsedToken::new(Token::Integer, number);
+                    Token::Integer(self.read_number().to_string())
                 } else {
-                    return ParsedToken::new(
-                        Token::Illegal,
-                        self.current_char.to_string().as_str(),
-                    );
+                    Token::Illegal(v.to_string())
                 }
             }
         };
@@ -139,43 +122,43 @@ mod test {
         let mut lexer = Lexer::new(input);
 
         let expected_tokens = vec![
-            ParsedToken::new(Token::Let, "let"),
-            ParsedToken::new(Token::Identifier, "five"),
-            ParsedToken::new(Token::Assign, "="),
-            ParsedToken::new(Token::Integer, "5"),
-            ParsedToken::new(Token::Semicolon, ";"),
-            ParsedToken::new(Token::Let, "let"),
-            ParsedToken::new(Token::Identifier, "ten"),
-            ParsedToken::new(Token::Assign, "="),
-            ParsedToken::new(Token::Integer, "10"),
-            ParsedToken::new(Token::Semicolon, ";"),
-            ParsedToken::new(Token::Let, "let"),
-            ParsedToken::new(Token::Identifier, "add"),
-            ParsedToken::new(Token::Assign, "="),
-            ParsedToken::new(Token::Function, "fn"),
-            ParsedToken::new(Token::LeftParenthesis, "("),
-            ParsedToken::new(Token::Identifier, "x"),
-            ParsedToken::new(Token::Comma, ","),
-            ParsedToken::new(Token::Identifier, "y"),
-            ParsedToken::new(Token::RightParenthesis, ")"),
-            ParsedToken::new(Token::LeftCurlyBrace, "{"),
-            ParsedToken::new(Token::Identifier, "x"),
-            ParsedToken::new(Token::Plus, "+"),
-            ParsedToken::new(Token::Identifier, "y"),
-            ParsedToken::new(Token::Semicolon, ";"),
-            ParsedToken::new(Token::RightCurlyBrace, "}"),
-            ParsedToken::new(Token::Semicolon, ";"),
-            ParsedToken::new(Token::Let, "let"),
-            ParsedToken::new(Token::Identifier, "result"),
-            ParsedToken::new(Token::Assign, "="),
-            ParsedToken::new(Token::Identifier, "add"),
-            ParsedToken::new(Token::LeftParenthesis, "("),
-            ParsedToken::new(Token::Identifier, "five"),
-            ParsedToken::new(Token::Comma, ","),
-            ParsedToken::new(Token::Identifier, "ten"),
-            ParsedToken::new(Token::RightParenthesis, ")"),
-            ParsedToken::new(Token::Semicolon, ";"),
-            ParsedToken::new(Token::EOF, ""),
+            Token::Let,
+            Token::Identifier(String::from("five")),
+            Token::Assign,
+            Token::Integer(String::from("5")),
+            Token::Semicolon,
+            Token::Let,
+            Token::Identifier(String::from("ten")),
+            Token::Assign,
+            Token::Integer(String::from("10")),
+            Token::Semicolon,
+            Token::Let,
+            Token::Identifier(String::from("add")),
+            Token::Assign,
+            Token::Function,
+            Token::LeftParenthesis,
+            Token::Identifier(String::from("x")),
+            Token::Comma,
+            Token::Identifier(String::from("y")),
+            Token::RightParenthesis,
+            Token::LeftCurlyBrace,
+            Token::Identifier(String::from("x")),
+            Token::Plus,
+            Token::Identifier(String::from("y")),
+            Token::Semicolon,
+            Token::RightCurlyBrace,
+            Token::Semicolon,
+            Token::Let,
+            Token::Identifier(String::from("result")),
+            Token::Assign,
+            Token::Identifier(String::from("add")),
+            Token::LeftParenthesis,
+            Token::Identifier(String::from("five")),
+            Token::Comma,
+            Token::Identifier(String::from("ten")),
+            Token::RightParenthesis,
+            Token::Semicolon,
+            Token::EOF,
         ];
 
         for (idx, expected_token) in expected_tokens.iter().enumerate() {

@@ -1,3 +1,3 @@
 mod token;
 
-pub use token::{ParsedToken, Token};
+pub use token::{Token};
