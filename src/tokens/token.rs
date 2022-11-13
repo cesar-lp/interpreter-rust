@@ -1,7 +1,7 @@
 #[derive(PartialEq, Debug)]
 pub struct ParsedToken {
-    token: Token,
-    literal: String,
+    pub token: Token,
+    pub literal: String,
 }
 
 impl ParsedToken {
@@ -13,31 +13,9 @@ impl ParsedToken {
     }
 }
 
-// const ILLEGAL : &str = "ILLEGAL";
-// const EOF : &str = "EOF";
-
-// // Identifiers + literals
-// const IDENTIFIER: &str = "IDENTIFIER";
-// const INTEGER: &str = "INTEGER";
-
-// // Operators
-// const ASSIGN: &str = "=";
-// const PLUS: &str = "+";
-
-// // Delimiters
-// const COMMA: &str = ",";
-// const SEMICOLON : &str = ";";
-
-// const LEFT_PARTENTHESIS: &str = "(";
-// const RIGHT_PARTENTHESIS: &str = ")";
-// const LEFT_CURLY_BRACE: &str = "{";
-// const RIGHT_CURLY_BRACE: &str = "}";
-
-// // Keywords
-// const FUNCTION: &str = "FUNCTION";
-// const LET: &str = "LET";
-
-#[derive(Debug, PartialEq)]
+// TODO: allow data to be passed into the enum variant
+// TODO: implement lookup table?
+#[derive(Debug, Eq, PartialEq)]
 pub enum Token {
     Illegal,
     EOF,
@@ -55,8 +33,15 @@ pub enum Token {
     Let,
 }
 
-// Transforms source code into tokens
-struct Lexer {}
+impl Token {
+    pub fn new(value: &str) -> Self {
+        match value {
+            "fn" => Token::Function,
+            "let" => Token::Let,
+            _ => Token::Identifier,
+        }
+    }
+}
 
 // Transforms tokens into AST
 struct Parser {}
