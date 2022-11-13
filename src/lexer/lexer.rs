@@ -1,5 +1,11 @@
 use crate::tokens::Token;
 
+#[derive(PartialEq)]
+enum CharType {
+    Letter,
+    Digit,
+}
+
 // TODO: maybe current_char should be grouped with position?
 // TODO: support unicode and emojis?
 // Transforms source code into tokens
@@ -38,10 +44,10 @@ impl Lexer {
             '+' => Token::Plus,
             '0' => Token::EOF,
             v => {
-                return if self.is_current_char_letter() {
-                    Token::new(self.read_identifier())
-                } else if self.is_current_char_digit() {
-                    Token::Integer(self.read_number().to_string())
+                return if self.current_char_is_of_type(&CharType::Letter) {
+                    Token::new(self.read_value(CharType::Letter))
+                } else if self.current_char_is_of_type(&CharType::Digit) {
+                    Token::Integer(self.read_value(CharType::Digit).to_string())
                 } else {
                     Token::Illegal(v.to_string())
                 }
@@ -63,33 +69,21 @@ impl Lexer {
         }
     }
 
-    // TODO: refactor read_identifier & read_number into single function?
-    fn read_identifier(&mut self) -> &str {
+    fn read_value(&mut self, char_type: CharType) -> &str {
         let position = self.position;
 
-        while self.is_current_char_letter() {
+        while self.current_char_is_of_type(&char_type) {
             self.read_char();
         }
 
         &self.input[position..self.position]
     }
 
-    fn read_number(&mut self) -> &str {
-        let position = self.position;
-
-        while self.is_current_char_digit() {
-            self.read_char();
+    fn current_char_is_of_type(&self, char_type: &CharType) -> bool {
+        match char_type {
+            CharType::Letter => self.current_char.is_alphabetic() || self.current_char == '_',
+            CharType::Digit => self.current_char.is_numeric(),
         }
-
-        &self.input[position..self.position]
-    }
-
-    fn is_current_char_letter(&self) -> bool {
-        self.current_char.is_alphabetic() || self.current_char == '_'
-    }
-
-    fn is_current_char_digit(&self) -> bool {
-        self.current_char.is_numeric()
     }
 
     fn read_char(&mut self) {

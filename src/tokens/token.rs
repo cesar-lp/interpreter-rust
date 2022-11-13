@@ -1,4 +1,3 @@
-// TODO: allow data to be passed into the enum variant
 // TODO: implement lookup table?
 #[derive(Debug, Eq, PartialEq)]
 pub enum Token {
