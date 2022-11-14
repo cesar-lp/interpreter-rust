@@ -21,6 +21,11 @@ pub enum Token {
     Let,
     LessThan,
     GreaterThan,
+    If,
+    Else,
+    True,
+    False,
+    Return,
 }
 
 impl Token {
@@ -28,6 +33,11 @@ impl Token {
         match value {
             "fn" => Token::Function,
             "let" => Token::Let,
+            "true" => Token::True,
+            "false" => Token::False,
+            "if" => Token::If,
+            "else" => Token::Else,
+            "return" => Token::Return,
             identifier => Token::Identifier(identifier.to_string()),
         }
     }

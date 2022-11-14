@@ -119,6 +119,12 @@ mod test {
         let result = add(five, ten);
         !-/*5;
         5 < 10 > 5;
+
+        if (5 < 10) {
+          return true;
+        } else {
+          return false;
+        }
         ";
 
         let mut lexer = Lexer::new(input);
@@ -172,6 +178,23 @@ mod test {
             Token::GreaterThan,
             Token::Integer(String::from("5")),
             Token::Semicolon,
+            Token::If,
+            Token::LeftParenthesis,
+            Token::Integer(String::from("5")),
+            Token::LessThan,
+            Token::Integer(String::from("10")),
+            Token::RightParenthesis,
+            Token::LeftCurlyBrace,
+            Token::Return,
+            Token::True,
+            Token::Semicolon,
+            Token::RightCurlyBrace,
+            Token::Else,
+            Token::LeftCurlyBrace,
+            Token::Return,
+            Token::False,
+            Token::Semicolon,
+            Token::RightCurlyBrace,
             Token::EOF,
         ];
 
