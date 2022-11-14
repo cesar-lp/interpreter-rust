@@ -42,6 +42,12 @@ impl Lexer {
             '}' => Token::RightCurlyBrace,
             ',' => Token::Comma,
             '+' => Token::Plus,
+            '-' => Token::Minus,
+            '/' => Token::Slash,
+            '*' => Token::Asterisk,
+            '!' => Token::Bang,
+            '>' => Token::GreaterThan,
+            '<' => Token::LessThan,
             '0' => Token::EOF,
             v => {
                 return if self.current_char_is_of_type(&CharType::Letter) {
@@ -111,6 +117,8 @@ mod test {
         };
 
         let result = add(five, ten);
+        !-/*5;
+        5 < 10 > 5;
         ";
 
         let mut lexer = Lexer::new(input);
@@ -151,6 +159,18 @@ mod test {
             Token::Comma,
             Token::Identifier(String::from("ten")),
             Token::RightParenthesis,
+            Token::Semicolon,
+            Token::Bang,
+            Token::Minus,
+            Token::Slash,
+            Token::Asterisk,
+            Token::Integer(String::from("5")),
+            Token::Semicolon,
+            Token::Integer(String::from("5")),
+            Token::LessThan,
+            Token::Integer(String::from("10")),
+            Token::GreaterThan,
+            Token::Integer(String::from("5")),
             Token::Semicolon,
             Token::EOF,
         ];

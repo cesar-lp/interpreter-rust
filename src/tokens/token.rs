@@ -7,6 +7,10 @@ pub enum Token {
     Integer(String),
     Assign,
     Plus,
+    Minus,
+    Asterisk,
+    Slash,
+    Bang,
     Comma,
     Semicolon,
     LeftParenthesis,
@@ -15,6 +19,8 @@ pub enum Token {
     RightCurlyBrace,
     Function,
     Let,
+    LessThan,
+    GreaterThan,
 }
 
 impl Token {
