@@ -26,6 +26,8 @@ pub enum Token {
     True,
     False,
     Return,
+    Equals,
+    NotEquals,
 }
 
 impl Token {
