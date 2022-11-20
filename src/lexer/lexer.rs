@@ -30,7 +30,7 @@ impl Lexer {
         lexer
     }
 
-    pub fn next_token(&mut self) -> Token {
+    pub fn next_token(&mut self) -> Option<Token> {
         self.skip_whitespace();
 
         // TODO: refactor != and == into same function?
@@ -63,21 +63,21 @@ impl Lexer {
             }
             '>' => Token::GreaterThan,
             '<' => Token::LessThan,
-            '0' => Token::EOF,
+            '0' => return Option::None,
             v => {
                 return if self.current_char_is_of_type(&CharType::Letter) {
-                    Token::new(self.read_value(CharType::Letter))
+                    Some(Token::new(self.read_value(CharType::Letter)))
                 } else if self.current_char_is_of_type(&CharType::Digit) {
-                    Token::Integer(self.read_value(CharType::Digit).to_string())
+                    Some(Token::Integer(self.read_value(CharType::Digit).to_string()))
                 } else {
-                    Token::Illegal(v.to_string())
+                    Some(Token::Illegal(v.to_string()))
                 }
             }
         };
 
         self.read_char();
 
-        token
+        Some(token)
     }
 
     fn skip_whitespace(&mut self) {
@@ -228,12 +228,11 @@ mod test {
             Token::NotEquals,
             Token::Integer(String::from("9")),
             Token::Semicolon,
-            Token::EOF,
         ];
 
         for (idx, expected_token) in expected_tokens.iter().enumerate() {
             let token = lexer.next_token();
-            assert_eq!(*expected_token, token, "Error at position {idx}");
+            assert_eq!(*expected_token, token.unwrap(), "Error at position {idx}");
         }
     }
 }
